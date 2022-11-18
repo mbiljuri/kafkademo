@@ -6,12 +6,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.example.kafkademo.model.DistanceInfo;
 import com.example.kafkademo.model.VehiclePosition;
 
-@Component
+@Service
 public class KafkaService {
 
     private Map<Long, DistanceInfo> distances = new HashMap<>();
@@ -31,6 +31,10 @@ public class KafkaService {
 
     public void sendVehiclePosition(VehiclePosition vehicle) {
         kafkaTemplateInputTopic.send(inputTopic, vehicle);
+    }
+
+    public Map<Long, DistanceInfo> getDistances() {
+        return distances;
     }
 
     @KafkaListener(topics = "input", groupId = "vehicle-group")
@@ -100,4 +104,5 @@ public class KafkaService {
                 * (pos2.getYCoordinate() - pos1.getYCoordinate())
                 + (pos2.getXCoordinate() - pos1.getXCoordinate()) * (pos2.getXCoordinate() - pos1.getXCoordinate()));
     }
+
 }
